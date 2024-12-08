@@ -220,6 +220,12 @@ I plan on going to University for continuing my studies, but <a href="https://so
             e.stopPropagation();
         });
 
+        input.addEventListener('focus', function() {
+            setTimeout(() => {
+                input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+        });
+
         output.innerHTML = `<div class="command-output">Welcome to Jacob's Terminal Portfolio! Type 'help' to see available commands.</div>`;
         scrollToBottom();
     </script>
