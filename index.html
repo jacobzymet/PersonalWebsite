@@ -207,6 +207,7 @@
                     ['help', 'Show available commands'],
                     ['whoami', 'Display info about me'],
                     ['projects', 'See what I have been working on'],
+                    ['dailydriver', 'Show my daily driver system'],
                     ['contact', 'Display contact information'],
                     ['clear', 'Clear terminal screen']
                 ]
@@ -244,6 +245,34 @@ I plan on going to University for continuing my studies, but <a href="https://so
                     ['Side Note', 'These are some of the only two platforms I would take seriously today.']
                 ]
             }),
+
+
+            dailydriver: () => ({
+                type: 'text',
+                content: `I prefer laptops as they are portable yet powerful, by modern standards. Aesthetics, build quality, and overall perfection and polishedness are extremely important for me. I use the follow systems:<br>
+                - Laptop: Alienware m16 R2
+                    &nbsp;&nbsp;&nbsp;&nbsp;- CPU: Intel Core Ultra 9 185H
+                    &nbsp;&nbsp;&nbsp;&nbsp;- GPU: Intel Arc Graphics (integrated) + NVIDIA GeForce RTX 4070 Laptop
+                    &nbsp;&nbsp;&nbsp;&nbsp;- RAM: 32GB DDR5 @ 5600 MT/S
+                    &nbsp;&nbsp;&nbsp;&nbsp;- Storage: 2TB (2 x 1TB) NVMe SSD
+                    &nbsp;&nbsp;&nbsp;&nbsp;- OS: Windows 11 <br>
+                - Laptop: MacBook Pro M4 Pro
+                    &nbsp;&nbsp;&nbsp;&nbsp;- CPU: Apple M4 Pro
+                    &nbsp;&nbsp;&nbsp;&nbsp;- GPU: Integrated
+                    &nbsp;&nbsp;&nbsp;&nbsp;- RAM: 24GB Unified Memory
+                    &nbsp;&nbsp;&nbsp;&nbsp;- Storage: 1TB SSD
+                    &nbsp;&nbsp;&nbsp;&nbsp;- OS: macOS<br>
+                - PC: Mini PC
+                    &nbsp;&nbsp;&nbsp;&nbsp;- CPU: AMD Ryzen 7 7840HS
+                    &nbsp;&nbsp;&nbsp;&nbsp;- GPU: AMD Radeon 780M Integrated Graphics
+                    &nbsp;&nbsp;&nbsp;&nbsp;- RAM: 32GB DDR5 @ 5600 MT/S
+                    &nbsp;&nbsp;&nbsp;&nbsp;- Storage: 1TB NVMe SSD
+                    &nbsp;&nbsp;&nbsp;&nbsp;- OS: Windows 11<br>
+                Evidently, I very much value portability, since I do not own any giant PC tower.<br>
+                For those who will criticze me for using Windows, I use it not because it's Microsoft bloatware, but rather because it has the best software support and compatibility, and is simply the best OS for people who just want to get on with life and not deal with ridiculous issues.`
+            }),
+
+
             clear: () => {
                 document.getElementById('output').innerHTML = `<div class="command-output">Welcome to my Portfolio. Type 'help' to see available commands.</div>`;
                 document.getElementById('input').value = '';
