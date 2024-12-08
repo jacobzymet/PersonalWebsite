@@ -192,7 +192,7 @@
         </div>
         <div id="terminal">
             <div id="output">
-                <div class="command-output">Welcome to my Portfolio. Type 'help' to see available commands.</div>
+                <div class="command-output">Welcome to my Portfolio. Type 'help' for available commands. </div>
             </div>
             <div class="input-line">
                 <span class="prompt">➜ ~/portfolio $</span>
@@ -276,14 +276,49 @@ I plan on going to University for continuing my studies, but <a href="https://so
 
 
             clear: () => {
-                document.getElementById('output').innerHTML = `<div class="command-output">Welcome to my Portfolio. Type 'help' to see available commands.</div>`;
+                document.getElementById('output').innerHTML = `<div class="command-output">Welcome to my Portfolio. Type 'help' for available commands. </div>`;
                 document.getElementById('input').value = '';
+                localStorage.removeItem('commandHistory'); // Clear command history from localStorage
                 return { type: 'text', content: '' };
-            }
+}
         };
 
         const input = document.getElementById('input');
         const output = document.getElementById('output');
+
+        // Load command history from localStorage
+        const commandHistory = JSON.parse(localStorage.getItem('commandHistory')) || [];
+        let historyIndex = commandHistory.length;
+
+        function saveCommandHistory(command) {
+            commandHistory.push(command);
+            localStorage.setItem('commandHistory', JSON.stringify(commandHistory));
+            historyIndex = commandHistory.length;
+        }
+
+        // Display previous commands and outputs
+        commandHistory.forEach(function(command) {
+            if (command === 'clear') {
+                // Skip 'clear' commands to prevent clearing the terminal
+                return;
+            }
+            const result = commands[command] 
+                ? commands[command]() 
+                : { type: 'error', content: `Command not found: ${command}` };
+
+            const newInputLine = document.createElement('div');
+            newInputLine.className = 'input-line';
+            newInputLine.innerHTML = `
+                <span class="prompt">➜ ~/portfolio $</span><span class="entered-command">${command}</span>
+            `;
+
+            const newOutput = document.createElement('div');
+            newOutput.className = 'command-output';
+            newOutput.innerHTML = formatOutput(result);
+
+            output.appendChild(newInputLine);
+            output.appendChild(newOutput);
+        });
 
         function formatOutput(result) {
             if (result.type === 'help') {
@@ -332,11 +367,26 @@ I plan on going to University for continuing my studies, but <a href="https://so
                 this.value = '';
                 scrollToBottom();
             }
+
+            if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                if (commandHistory.length > 0) {
+                    if (e.key === 'ArrowUp') {
+                        historyIndex = Math.max(0, historyIndex - 1);
+                    } else if (e.key === 'ArrowDown') {
+                        historyIndex = Math.min(commandHistory.length, historyIndex + 1);
+                    }
+                    this.value = commandHistory[historyIndex] || '';
+                }
+            }
         });
 
         input.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 const command = this.value.toLowerCase().trim();
+
+                if (command) {
+                    saveCommandHistory(command);
+                }
 
                 if (command === 'clear') {
                     commands.clear();
@@ -387,36 +437,3 @@ I plan on going to University for continuing my studies, but <a href="https://so
     </script>
 </body>
 </html>
-<script>
-    // load command history from localStorage
-    const commandHistory = JSON.parse(localStorage.getItem('commandHistory')) || [];
-    let historyIndex = commandHistory.length;
-
-    function saveCommandHistory(command) {
-        commandHistory.push(command);
-        localStorage.setItem('commandHistory', JSON.stringify(commandHistory));
-        historyIndex = commandHistory.length;
-    }
-
-    input.addEventListener('keydown', function(e) {
-        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-            if (commandHistory.length > 0) {
-                if (e.key === 'ArrowUp') {
-                    historyIndex = Math.max(0, historyIndex - 1);
-                } else if (e.key === 'ArrowDown') {
-                    historyIndex = Math.min(commandHistory.length, historyIndex + 1);
-                }
-                this.value = commandHistory[historyIndex] || '';
-            }
-        }
-    });
-
-    input.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            const command = this.value.toLowerCase().trim();
-            if (command) {
-                saveCommandHistory(command);
-            }
-        }
-    });
-</script>
