@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Jacob's Terminal</title>
     <style>
         :root {
@@ -17,6 +17,7 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
+            font-size: 16px;
         }
         body {
             background: var(--bg);
@@ -34,13 +35,13 @@
         }
         .prompt {
             color: var(--prompt);
-            white-space: nowrap; /* Prevent line break */
+            white-space: nowrap;
         }
         .input-line {
             display: flex;
             margin: 8px 0;
-            white-space: nowrap; /* Prevent line break */
-            overflow: hidden; /* Prevent horizontal scrolling */
+            white-space: nowrap;
+            overflow: hidden;
             width: 100%;
         }
         #input {
@@ -51,7 +52,7 @@
             font-size: 16px;
             flex-grow: 1;
             outline: none;
-            min-width: 0; /* Prevent input from causing overflow */
+            min-width: 0;
         }
         .command-output {
             color: var(--output);
