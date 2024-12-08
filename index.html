@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jacob's Terminal</title>
+    <style>
+        :root {
+            --bg: #282a36;
+            --text: #f8f8f2;
+            --prompt: #50fa7b;
+            --command: #bd93f9;
+            --output: #8be9fd;
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Fira Code', 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+        #terminal {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .prompt {
+            color: var(--prompt);
+        }
+        .input-line {
+            display: flex;
+            margin: 8px 0;
+        }
+        #input {
+            background: transparent;
+            border: none;
+            color: var(--command);
+            font-family: inherit;
+            font-size: 16px;
+            flex-grow: 1;
+            outline: none;
+        }
+        .command-output {
+            color: var(--output);
+            padding: 8px 0;
+        }
+        .help-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .command-name {
+            color: var(--command);
+            padding-right: 20px;
+        }
+        .typing {
+            animation: typing 0.05s steps(1);
+        }
+        @keyframes typing {
+            50% { opacity: 0; }
+        }
+        a {
+            color: var(--output);
+        }
+    </style>
+</head>
+<body>
+    <div id="terminal">
+        <div id="output"></div>
+        <div class="input-line">
+            <span class="prompt">➜ ~/portfolio $&nbsp;</span>
+            <input type="text" id="input" autofocus>
+        </div>
+    </div>
+
+    <script>
+        const commands = {
+            help: () => ({
+                type: 'help',
+                content: [
+                    ['help', 'Show available commands'],
+                    ['whoami', 'Display info about me'],
+                    ['projects', 'See what I have been working on'],
+                    ['contact', 'Display contact information'],
+                    ['clear', 'Clear terminal screen']
+                ]
+            }),
+            whoami: () => ({
+                type: 'text',
+                content: `Hi, my name is Jacob, but I'm 王骁 in Mandarin and みらい in Japanese.
+I'm presently a high school student and do programming in Python, C#, C, Assembly (x86), as a hobby, and for my company.
+I'm also experienced with Docker, Podman, WordPress, HTML/CSS, and PHP (to a lesser extent).
+
+I founded Sol (Sol US LLC) as part of my long-term vision for solving some of the most critical problems in the world today.
+
+Although programming isn't my sole interest, it's a significant one. I'm also interested in:
+- 🚀 Space exploration
+- 🌌 Futurism
+- 🩺 Health/Biotechnology
+- 📚 Modern Education
+- 🌆 City/World Infrastructure
+
+I'm proficient in English (native speaker), and Mandarin (to an extent).
+
+I plan on going to University for continuing my studies, but <a href="https://solcluster.com/2024/11/13/creating-the-most-futuristic-university-is-hard/">I'm very worried about the current state of university education in most parts of the world.</a>`
+            }),
+            projects: () => ({
+                type: 'list',
+                content: [
+                    '<img src="https://solcluster.com/wp-content/uploads/2024/09/SolBeta4544444353563246-1.png" alt="Sol Logo" style="width: 16px; height: 16px; vertical-align: middle;"> <a href="https://solcluster.com/">Sol</a> - An international, multidisciplinary company.'
+                ]
+            }),
+            contact: () => ({
+                type: 'links',
+                content: [
+                    ['X', '<a href="https://x.com/wxmirai">@wxmirai</a>'],
+                    ['GitHub', '<a href="https://github.com/jacobzymet">jacobzymet</a><br /><br />'],
+                    ['Side Note', 'These are some of the only two platforms I would take seriously today.']
+                ]
+            }),
+            clear: () => {
+                document.getElementById('output').innerHTML = `<div class="command-output">Welcome to Jacob's Terminal Portfolio! Type 'help' to see available commands.</div>`;
+                document.getElementById('input').value = '';
+                return { type: 'text', content: '' };
+            }
+        };
+
+        const input = document.getElementById('input');
+        const output = document.getElementById('output');
+
+        function formatOutput(result) {
+            if (result.type === 'help') {
+                return `<div class="help-grid">
+                    ${result.content.map(([cmd, desc]) => 
+                        `<span class="command-name">${cmd}</span><span>${desc}</span>`
+                    ).join('')}
+                </div>`;
+            }
+            if (result.type === 'list') {
+                return result.content.map(item => `<div>${item}</div>`).join('');
+            }
+            if (result.type === 'categories') {
+                return Object.entries(result.content)
+                    .map(([category, items]) => 
+                        `<div>${category}: ${items.join(', ')}</div>`
+                    ).join('');
+            }
+            if (result.type === 'links') {
+                return result.content.map(([platform, link]) => 
+                    `<div>${platform}: ${link}</div>`
+                ).join('');
+            }
+            return result.content.replace(/\n/g, '<br>');
+        }
+
+        function scrollToBottom() {
+            const terminal = document.getElementById('terminal');
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        input.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'c') {
+                e.preventDefault();
+                output.innerHTML += `
+                    <div class="input-line">
+                        <span class="prompt">➜ ~/portfolio $&nbsp;</span>${this.value}
+                    </div>
+                    <div class="command-output">^C</div>
+                `;
+                this.value = '';
+                scrollToBottom();
+            }
+        });
+
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const command = this.value.toLowerCase().trim();
+
+                if (command === 'clear') {
+                    commands.clear();
+                    output.innerHTML = `<div class="command-output">Welcome to Jacob's Terminal Portfolio! Type 'help' to see available commands.</div>`;
+                } else {
+                    const result = commands[command] 
+                        ? commands[command]() 
+                        : { type: 'error', content: `Command not found: ${command}` };
+
+                    output.innerHTML += `
+                        <div class="input-line">
+                            <span class="prompt">➜ ~/portfolio $&nbsp;</span>${command}
+                        </div>
+                        <div class="command-output">${formatOutput(result)}</div>
+                    `;
+                }
+
+                this.value = '';
+                scrollToBottom();
+            }
+        });
+
+        document.body.addEventListener('click', function() {
+            input.focus();
+        });
+
+        input.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        output.innerHTML = `<div class="command-output">Welcome to Jacob's Terminal Portfolio! Type 'help' to see available commands.</div>`;
+        scrollToBottom();
+    </script>
+</body>
+</html>
