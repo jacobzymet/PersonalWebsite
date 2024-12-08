@@ -192,7 +192,7 @@
         </div>
         <div id="terminal">
             <div id="output">
-                <div class="command-output">Welcome to my Portfolio. Type 'help' for available commands. </div>
+                <div class="command-output">Welcome to my website. Type 'help' for available commands. </div>
             </div>
             <div class="input-line">
                 <span class="prompt">➜ ~/portfolio $</span>
@@ -282,7 +282,7 @@ I plan on going to university soon, but <a href="https://solcluster.com/2024/11/
 
 
             clear: () => {
-                document.getElementById('output').innerHTML = `<div class="command-output">Welcome to my Portfolio. Type 'help' for available commands. </div>`;
+                document.getElementById('output').innerHTML = `<div class="command-output">Welcome to my website. Type 'help' for available commands. </div>`;
                 document.getElementById('input').value = '';
                 localStorage.removeItem('commandHistory'); // Clear command history from localStorage
                 return { type: 'text', content: '' };
